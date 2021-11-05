@@ -30,7 +30,20 @@ function load_mailbox(mailbox) {
   document.querySelector('#compose-view').style.display = 'none';
 
   // Show the mailbox name
-  document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
+  document.querySelector('#emails-view').innerHTML = ` <h3 id="mail_box">${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
+
+  // Load emails
+  fetch('/emails/' + mailbox)
+  .then(response => response.json())
+  .then(emails => {
+    //console.log(emails) para ver que imprime en pantalla. Status: OK!
+    emails.forEach(email => {
+      const div = document.createElement('div');
+      div.className = 'email-box';
+      div.innerHTML = `<p> from <b>${email['sender']}</b> - subject <b>${email['subject']}</b> - at <b>${email['timestamp']}</b> </p>`;
+      document.querySelector('#emails-view').appendChild(div);
+    });
+  });
 }
 
 function sent_mail(event){
