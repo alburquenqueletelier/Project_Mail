@@ -67,7 +67,7 @@ function sent_mail(event){
   .then(response => load_mailbox('sent'));
 }
 
-// Funcion para cargar un mail especifico
+// Load a mail with the "id"
 function load_email(id){
   fetch('/emails/'+ id)
   .then(response => response.json())
@@ -85,6 +85,13 @@ function load_email(id){
       </div>
       <p id="body_mail" class="border p-2"> ${email['body']} </p>
     `;
+  })
+  // Change email read = True
+  fetch('/emails/' + id, {
+    method: 'PUT',
+    body: JSON.stringify({
+        read: true
+    })
   })
 }
 
