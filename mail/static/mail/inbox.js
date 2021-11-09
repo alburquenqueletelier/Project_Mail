@@ -16,6 +16,7 @@ function compose_email() {
   // Show compose view and hide other views
   document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'block';
+  document.querySelector('#see_email').style.display = 'none';
 
   // Clear out composition fields
   document.querySelector('#compose-recipients').value = '';
@@ -28,6 +29,7 @@ function load_mailbox(mailbox) {
   // Show the mailbox and hide other views
   document.querySelector('#emails-view').style.display = 'block';
   document.querySelector('#compose-view').style.display = 'none';
+  document.querySelector('#see_email').style.display = 'none';
 
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = ` <h3 id="mail_box">${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
@@ -41,12 +43,18 @@ function load_mailbox(mailbox) {
       const div = document.createElement('div');
       div.className = 'email-box';
       div.innerHTML = `<p> from <b>${email['sender']}</b> - subject <b>${email['subject']}</b> - at <b>${email['timestamp']}</b> </p>`;
+      div.addEventListener('click', () => load_email(email['id']));
       document.querySelector('#emails-view').appendChild(div);
     });
   });
 }
 
+// funcion para enviar un mail
 function sent_mail(event){
+  document.querySelector('#emails-view').style.display = 'none';
+  document.querySelector('#compose-view').style.display = 'none';
+  document.querySelector('#see_email').style.display = 'none';
+
   event.preventDefault();
   fetch('/emails', {
     method: 'POST',
@@ -58,3 +66,25 @@ function sent_mail(event){
   })
   .then(response => load_mailbox('sent'));
 }
+
+// Funcion para cargar un mail especifico
+function load_email(id){
+  fetch('/emails/'+ id)
+  .then(response => response.json())
+  .then(email => {
+    document.querySelector('#emails-view').style.display = 'none';
+    document.querySelector('#compose-view').style.display = 'none';
+    document.querySelector('#see_email').style.display = 'block';
+
+    document.querySelector('#see_email').innerHTML = `
+      <div class="border p-2" id="card">
+      <p> Sender: ${email['sender']} </p>
+      <p> Recipients: ${email['recipients']} </p>
+      <p> Subject: ${email['subject']} </p>
+      <p> Timestamp: ${email['timestamp']} </p>
+      </div>
+      <p id="body_mail" class="border p-2"> ${email['body']} </p>
+    `;
+  })
+}
+

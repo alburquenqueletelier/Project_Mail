@@ -8,6 +8,17 @@ textarea {
     align-items: center;
 }
 
+#card {
+    width: fit-content;
+    max-width: 600px;
+}
+
 #mail_box{
     margin-bottom: 15px;
+}
+
+#body_mail{
+    margin-top: 10px;
+    width: fit-content;
+    max-width: 600px;
 }
