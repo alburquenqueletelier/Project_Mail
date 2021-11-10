@@ -16,12 +16,12 @@
 
     <div id="compose-view">
         <h3>New Email</h3>
-        <form id="compose-form">
+        <form id="compose-form" class="form-floating">
             <div class="form-group">
                 From: <input disabled class="form-control" value="{{ request.user.email }}">
             </div>
             <div class="form-group">
-                To: <input id="compose-recipients" class="form-control">
+                To: <input id="compose-recipients" class="form-control" placeholder="Recipients">
             </div>
             <div class="form-group">
                 <input class="form-control" id="compose-subject" placeholder="Subject">
