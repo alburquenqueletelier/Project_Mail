@@ -69,6 +69,14 @@ function sent_mail(event){
 
 // Load a mail with the "id"
 function load_email(id){
+  // Change email read = True
+  fetch('/emails/' + id, {
+    method: 'PUT',
+    body: JSON.stringify({
+        read: true
+    })
+  })
+  // See the email info
   fetch('/emails/'+ id)
   .then(response => response.json())
   .then(email => {
@@ -85,13 +93,29 @@ function load_email(id){
       </div>
       <p id="body_mail" class="border p-2"> ${email['body']} </p>
     `;
-  })
-  // Change email read = True
-  fetch('/emails/' + id, {
-    method: 'PUT',
-    body: JSON.stringify({
-        read: true
-    })
+  // Button to archived mail
+  const button = document.createElement('button');
+  button.id = "archive";
+  button.className = "button-action";
+  if (!email['archived']) {
+    button.innerHTML = "Archived"
+    button.addEventListener('click', () => fetch('/emails/' + id, {
+      method: 'PUT',
+      body: JSON.stringify({
+          archived: true
+      })
+    }).then(load_mailbox("archive"))
+    )
+  } else {
+    button.innerHTML = "Unarchived"
+    button.addEventListener('click', () => fetch('/emails/' + id, {
+      method: 'PUT',
+      body: JSON.stringify({
+          archived: false
+      })
+    }).then(load_mailbox("inbox"))
+    )
+  }
+  document.querySelector("#see_email").append(button);
   })
 }
-
