@@ -33,6 +33,7 @@
 
     <div id="see_email">
     </div>
+    {{ request.user.email|json_script:"user_id" }}
 {% endblock %}
 
 {% block script %}

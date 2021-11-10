@@ -95,27 +95,34 @@ function load_email(id){
     `;
   // Button to archived mail
   const button = document.createElement('button');
+  const user_id = JSON.parse(document.getElementById('user_id').textContent);
   button.id = "archive";
   button.className = "button-action";
-  if (!email['archived']) {
-    button.innerHTML = "Archived"
-    button.addEventListener('click', () => fetch('/emails/' + id, {
-      method: 'PUT',
-      body: JSON.stringify({
-          archived: true
+  if (user_id !== email["sender"]){
+    if (!email['archived']) {
+      button.innerHTML = "Archived"
+      button.addEventListener('click', () => fetch('/emails/' + id, {
+        method: 'PUT',
+        body: JSON.stringify({
+            archived: true
+        })
       })
-    }).then(load_mailbox("archive"))
-    )
-  } else {
-    button.innerHTML = "Unarchived"
-    button.addEventListener('click', () => fetch('/emails/' + id, {
-      method: 'PUT',
-      body: JSON.stringify({
-          archived: false
+      .then(load_mailbox("inbox"))
+      .then(location.reload())
+      )
+    } else {
+      button.innerHTML = "Unarchived"
+      button.addEventListener('click', () => fetch('/emails/' + id, {
+        method: 'PUT',
+        body: JSON.stringify({
+            archived: false
+        })
       })
-    }).then(load_mailbox("inbox"))
-    )
+      .then(load_mailbox("inbox"))
+      .then(location.reload())
+      )
+    }
+    document.querySelector("#see_email").append(button);
   }
-  document.querySelector("#see_email").append(button);
   })
 }
