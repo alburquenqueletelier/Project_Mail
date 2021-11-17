@@ -37,9 +37,9 @@ function compose_email(id){
           lista.push(users[i])
         }
       }
-      document.querySelector('#compose-recipients').value = `${email['sender']}, ${lista}`;
+      document.querySelector('#compose-recipients').value = `${email['sender']}` + ' ' + `${lista}`;
       document.querySelector('#compose-recipients').disabled = true;
-      if (!email['subject'].startsWith('Re')){
+      if (!email['subject'].startsWith('Re:')){
         document.querySelector('#compose-subject').value = `Re: ${email['subject']}`;
       } else {
         document.querySelector('#compose-subject').value = email['subject'];
@@ -65,12 +65,17 @@ function load_mailbox(mailbox) {
   fetch('/emails/' + mailbox)
   .then(response => response.json())
   .then(emails => {
-    //console.log(emails) para ver que imprime en pantalla. Status: OK!
     emails.forEach(email => {
       const div = document.createElement('div');
       div.className = 'email-box';
       div.innerHTML = `<p> from <b>${email['sender']}</b> - subject <b>${email['subject']}</b> - at <b>${email['timestamp']}</b> </p>`;
       div.addEventListener('click', () => load_email(email['id']));
+      // Add color white to unread, grey to read
+      if (email['read']){
+        div.style.backgroundColor = "grey";
+      } else {
+        div.style.backgroundColor = "white";
+      }
       document.querySelector('#emails-view').appendChild(div);
     });
   });
@@ -119,16 +124,19 @@ function load_email(id){
       <p> Subject: ${email['subject']} </p>
       <p> Timestamp: ${email['timestamp']} </p>
       </div>
-      <p id="body_mail" class="border p-2"> ${email['body']} </p>
+      <div id="body_mail" class="border p-2">${email['body']}</div>
     `;
     // Button to archived mail
     const arch = document.createElement('button');
     const reply = document.createElement('button');
+    const unread = document.createElement('button');
     const user_id = JSON.parse(document.getElementById('user_id').textContent);
     arch.id = "archive";
     arch.className = "button-action";
     reply.id = "reply";
-    reply.className = "button-reply";
+    reply.className = "button-action";
+    unread.id = "unread";
+    unread.className = "button-action"
     // if user not the sender 
     if (user_id !== email["sender"]){
       // Archive control
@@ -159,6 +167,19 @@ function load_email(id){
       reply.innerHTML = "Reply";
       reply.addEventListener('click', () => compose_email(email['id']))
       document.querySelector("#see_email").append(arch, reply);
+    }
+  if (email['read']){
+      unread.innerHTML = "Mark as Unread";
+      unread.addEventListener('click', () => fetch('/emails/' + id, {
+        method: 'PUT',
+        body: JSON.stringify({
+          read: false
+        })
+      })
+      .then(load_mailbox("inbox"))
+      .then(location.reload())
+      )
+      document.querySelector("#see_email").append(unread);
     }
   })
 }

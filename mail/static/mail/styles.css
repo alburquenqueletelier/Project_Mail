@@ -1,24 +1,32 @@
+:root{
+    --width_s: 900px;
+    --margin_buttons: 20px;
+}
+
 textarea {
     min-height: 400px;
 }
 
-.email-box{
+div.email-box{
     border: 1px solid;
-    height: fit-content;
-    align-items: center;
+    margin: 10px;
+    max-width: var(--width_s);
 }
 
 #card {
-    width: fit-content;
-    max-width: 600px;
+    max-width: var(--width_s);
 }
 
 #mail_box{
     margin-bottom: 15px;
+    max-width: var(--width_s);
 }
 
 #body_mail{
     margin-top: 10px;
-    width: fit-content;
-    max-width: 600px;
+    max-width: var(--width_s);
+}
+
+.button-action {
+    margin: var(--margin_buttons);
 }
