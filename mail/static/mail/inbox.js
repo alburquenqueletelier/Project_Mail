@@ -1,18 +1,60 @@
 document.addEventListener('DOMContentLoaded', function() {
 
   // Use buttons to toggle between views
-  document.querySelector('#inbox').addEventListener('click', () => load_mailbox('inbox'));
-  document.querySelector('#sent').addEventListener('click', () => load_mailbox('sent'));
-  document.querySelector('#archived').addEventListener('click', () => load_mailbox('archive'));
-  document.querySelector('#compose').addEventListener('click', compose_email);
-  document.querySelector('#compose-form').addEventListener('submit', sent_mail);
-
+  document.querySelector('#inbox').addEventListener('click', () => {
+    history.pushState({state : 'inbox'}, "", 'inbox');
+    load_mailbox('inbox');
+  });
+  document.querySelector('#sent').addEventListener('click', () => {
+    history.pushState({state : 'sent'}, "", 'sent');
+    load_mailbox('sent');
+  });
+  document.querySelector('#archived').addEventListener('click', () => {
+    history.pushState({state : 'archive'}, "", 'archived');
+    load_mailbox('archive');
+  });
+  document.querySelector('#compose').addEventListener('click', () => {
+    history.pushState({state : 'compose'}, "", 'compose');
+    compose_email();
+  });
+  document.querySelector('#compose-form').addEventListener('submit', () => {
+    history.pushState({}, '', '/');
+    sent_mail();
+  });
   // By default, load the inbox
-  load_mailbox('inbox');
+  document.querySelector('#inbox').click();
+
+  window.onpopstate = function(event) {
+    event.preventDefault;
+    const mailbox = event.state.state;
+    //console.log(event);
+    if (event.state.state !== 'compose'){
+      load_mailbox(`${mailbox}`);
+    } else {
+      compose_email();
+    }
+  }
+
 });
 
-function compose_email(id){
+function reloadpage(){
+  const urlreload = window.location.href;
+  const split = urlreload.split('/')
+  // Genera la url deseada que sería http://127.0.0.1:8000/
+  //let load = split.reduce((b,c) => b+c, '');
+  const last = split[split.length-1]
+  const load = last.search('-')
+  if (load < 0){
+    document.querySelector(`#${load}`).click();
+  } else {
+    let slice = last.slice(0,load).includes('a') ? last.slice(0,load) + 'd' : last.slice(0,load);
+    document.querySelector(`#${slice}`).click();
+  }
+}
 
+
+function compose_email(id){
+  //history.pushState({}, '', '/');
   // Show compose view and hide other views
   document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'block';
@@ -69,7 +111,10 @@ function load_mailbox(mailbox) {
       const div = document.createElement('div');
       div.className = 'email-box';
       div.innerHTML = `<p> from <b>${email['sender']}</b> - subject <b>${email['subject']}</b> - at <b>${email['timestamp']}</b> </p>`;
-      div.addEventListener('click', () => load_email(email['id']));
+      div.addEventListener('click', () => {
+        history.pushState({state : mailbox}, "", `${mailbox}-${email['id']}`);
+        load_email(email['id'])
+      });
       // Add color white to unread, grey to read
       if (email['read']){
         div.style.backgroundColor = "grey";
@@ -82,12 +127,11 @@ function load_mailbox(mailbox) {
 }
 
 // funcion para enviar un mail
-function sent_mail(event){
+function sent_mail(){
   document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'none';
   document.querySelector('#see_email').style.display = 'none';
 
-  event.preventDefault();
   fetch('/emails', {
     method: 'POST',
     body: JSON.stringify({
@@ -96,8 +140,11 @@ function sent_mail(event){
         body: document.querySelector('#compose-body').value
     })
   })
-  .then(location.reload())
-  .then(response => load_mailbox('sent'));
+  .then(response => response.json())
+  .then(result => {
+    // Print result
+    console.log(result);
+  });
 }
 
 // Load a mail with the "id"
@@ -149,7 +196,6 @@ function load_email(id){
           })
         })
         .then(load_mailbox("inbox"))
-        .then(location.reload())
         )
       } else {
         arch.innerHTML = "Unarchived"
@@ -160,12 +206,14 @@ function load_email(id){
           })
         })
         .then(load_mailbox("inbox"))
-        .then(location.reload())
         )
       }
       // Reply email
       reply.innerHTML = "Reply";
-      reply.addEventListener('click', () => compose_email(email['id']))
+      reply.addEventListener('click', () => {
+        history.pushState({state : id}, "", `reply-${id}`);
+        compose_email(email['id'])
+      })
       document.querySelector("#see_email").append(arch, reply);
     }
   if (email['read']){
@@ -176,8 +224,7 @@ function load_email(id){
           read: false
         })
       })
-      .then(load_mailbox("inbox"))
-      .then(location.reload())
+      .then(reloadpage())
       )
       document.querySelector("#see_email").append(unread);
     }

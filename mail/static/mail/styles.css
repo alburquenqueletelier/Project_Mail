@@ -1,6 +1,8 @@
 :root{
     --width_s: 900px;
     --margin_buttons: 20px;
+    --read_mail_color: grey;
+    --unread_mail_color: white;
 }
 
 textarea {
