@@ -2,13 +2,21 @@
 {% load static %}
 
 {% block body %}
-    <h2>{{ request.user.email }}</h2>
+    <div class="row">
+        <p class="m-3"><u>Login as</u></p>
+        <div class="col-auto mb-auto border rounded border-primary">
+            <h2 class="title_h2" id="title_user">{{ request.user.email }}</h2>
+        </div>
+    </div>
+    <div class="row mb-1">
+        <div class="col-auto"><button class="btn btn-sm btn-outline-primary" id="inbox">Inbox</button></div>
+        <div class="col-auto"><button class="btn btn-sm btn-outline-primary" id="compose">Compose</button></div>
+        <div class="col-auto"><button class="btn btn-sm btn-outline-primary" id="sent">Sent</button></div>
+        <div class="col-auto"><button class="btn btn-sm btn-outline-primary" id="archived">Archived</button></div>
+        <div class="col-auto"><a class="btn btn-sm btn-outline-primary" href="{% url 'logout' %}">Log Out</a></div>
 
-    <button class="btn btn-sm btn-outline-primary" id="inbox">Inbox</button>
-    <button class="btn btn-sm btn-outline-primary" id="compose">Compose</button>
-    <button class="btn btn-sm btn-outline-primary" id="sent">Sent</button>
-    <button class="btn btn-sm btn-outline-primary" id="archived">Archived</button>
-    <a class="btn btn-sm btn-outline-primary" href="{% url 'logout' %}">Log Out</a>
+    </div>
+
     <hr>
 
     <div id="emails-view">

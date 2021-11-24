@@ -117,7 +117,7 @@ function load_mailbox(mailbox) {
       });
       // Add color white to unread, grey to read
       if (email['read']){
-        div.style.backgroundColor = "grey";
+        div.style.backgroundColor = "rgb(204, 201, 205)";
       } else {
         div.style.backgroundColor = "white";
       }

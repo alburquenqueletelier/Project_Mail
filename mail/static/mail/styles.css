@@ -1,12 +1,16 @@
 :root{
     --width_s: 900px;
+    --width_log: 500px;
     --margin_buttons: 20px;
-    --read_mail_color: grey;
-    --unread_mail_color: white;
+    --h2_color: rgb(0, 76, 255);
+    --main_ground_color: rgb(234, 234, 241);
+}
+textarea {
+    max-height: 900px;
 }
 
-textarea {
-    min-height: 400px;
+h2.title_h2{
+    color: var(--h2_color);
 }
 
 div.email-box{
@@ -15,13 +19,18 @@ div.email-box{
     max-width: var(--width_s);
 }
 
+div.frame{
+    max-width: var(--width_s);
+    background-color: rgb(246, 246, 246);
+    justify-content: center
+}
+
 #card {
     max-width: var(--width_s);
 }
 
 #mail_box{
     margin-bottom: 15px;
-    max-width: var(--width_s);
 }
 
 #body_mail{
@@ -31,4 +40,8 @@ div.email-box{
 
 .button-action {
     margin: var(--margin_buttons);
+}
+
+input.btn {
+    margin-top: 15px;
 }
