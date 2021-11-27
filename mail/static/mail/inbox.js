@@ -87,7 +87,7 @@ function compose_email(id){
         document.querySelector('#compose-subject').value = email['subject'];
       }
       document.querySelector('#compose-subject').disabled = true;
-      document.querySelector('#compose-body').value.focus() = `On ${email['timestamp']} ${email['sender']} wrote: ${email['body']}`;
+      document.querySelector('#compose-body').value = `On ${email['timestamp']}\n${email['sender']} wrote:\n${email['body']}\n_________________________\n`;
       document.getElementById('compose-body').focus();
     })
   } else {
@@ -144,10 +144,9 @@ function sent_mail(){
     })
   })
   .then(response => response.json())
-  .then(result => {
-    // Print result
-    console.log(result);
-  });
+  .then( () => {
+    document.querySelector('#sent').click();
+  })
 }
 
 // Load a mail with the "id"
@@ -176,7 +175,7 @@ function load_email(id){
         <li class="list-group-item list-group-item-secondary"> <strong>Timestamp: </strong> ${email['timestamp']} </li>
       </ul>
       </div>
-      <div id="body_mail" class="border border-primary p-2">${email['body']}</div>
+      <div id="body_mail" class="border border-primary p-2"><pre>${email['body']}</pre></div>
     `;
     // Button to archived mail
     const arch = document.createElement('button');
