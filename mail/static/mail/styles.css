@@ -1,27 +1,38 @@
 :root{
     --width_s: 900px;
-    --width_log: 500px;
     --margin_buttons: 20px;
     --h2_color: rgb(0, 76, 255);
-    --main_ground_color: rgb(234, 234, 241);
+    --h3_color: rgb(241, 79, 79);
+    --card_ground_color: rgb(246, 246, 246);
 }
-textarea {
-    max-height: 900px;
+
+#compose-body {
+    height: 250px;
+}
+#hr{
+    max-width: var(--width_s);
+    margin-left: 0px;
+}
+
+#compose-view{
+    max-width:var(--width_s);
 }
 
 h2.title_h2{
     color: var(--h2_color);
+    min-width: 20px;
 }
 
 div.email-box{
     border: 1px solid;
     margin: 10px;
     max-width: var(--width_s);
+    cursor: pointer;
 }
 
 div.frame{
     max-width: var(--width_s);
-    background-color: rgb(246, 246, 246);
+    background-color: var(--card_ground_color);
     justify-content: center
 }
 
@@ -29,8 +40,9 @@ div.frame{
     max-width: var(--width_s);
 }
 
-#mail_box{
+h3.mail_box{
     margin-bottom: 15px;
+    color: var(--h3_color)
 }
 
 #body_mail{

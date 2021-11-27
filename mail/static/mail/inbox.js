@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Use buttons to toggle between views
   document.querySelector('#inbox').addEventListener('click', () => {
-    history.pushState({state : 'inbox'}, "", 'inbox');
+    history.pushState({state : 'inbox'}, "inbox", 'inbox');
     load_mailbox('inbox');
   });
   document.querySelector('#sent').addEventListener('click', () => {
@@ -87,8 +87,11 @@ function compose_email(id){
         document.querySelector('#compose-subject').value = email['subject'];
       }
       document.querySelector('#compose-subject').disabled = true;
-      document.querySelector('#compose-body').value = `On ${email['timestamp']} ${email['sender']} wrote: ${email['body']}`;
+      document.querySelector('#compose-body').value.focus() = `On ${email['timestamp']} ${email['sender']} wrote: ${email['body']}`;
+      document.getElementById('compose-body').focus();
     })
+  } else {
+    document.getElementById('compose-recipients').focus();
   }
 }
 
@@ -101,7 +104,7 @@ function load_mailbox(mailbox) {
   document.querySelector('#see_email').style.display = 'none';
 
   // Show the mailbox name
-  document.querySelector('#emails-view').innerHTML = ` <h3 id="mail_box">${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
+  document.querySelector('#emails-view').innerHTML = ` <h3 class="mail_box">${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
 
   // Load emails
   fetch('/emails/' + mailbox)
@@ -165,13 +168,15 @@ function load_email(id){
     document.querySelector('#see_email').style.display = 'block';
 
     document.querySelector('#see_email').innerHTML = `
-      <div class="border p-2" id="card">
-      <p> Sender: ${email['sender']} </p>
-      <p> Recipients: ${email['recipients']} </p>
-      <p> Subject: ${email['subject']} </p>
-      <p> Timestamp: ${email['timestamp']} </p>
+      <div id="card">
+      <ul class="list-group">
+        <li class="list-group-item list-group-item-secondary"> <strong> Sender: </strong> ${email['sender']} </li>
+        <li class="list-group-item list-group-item-secondary"> <strong>Recipients: </strong> ${email['recipients']} </li>
+        <li class="list-group-item list-group-item-secondary"> <strong> Subject: </strong> ${email['subject']} </li>
+        <li class="list-group-item list-group-item-secondary"> <strong>Timestamp: </strong> ${email['timestamp']} </li>
+      </ul>
       </div>
-      <div id="body_mail" class="border p-2">${email['body']}</div>
+      <div id="body_mail" class="border border-primary p-2">${email['body']}</div>
     `;
     // Button to archived mail
     const arch = document.createElement('button');
